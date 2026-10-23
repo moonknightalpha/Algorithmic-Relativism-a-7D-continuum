@@ -1,0 +1,195 @@
+Python 3.15.1 (v3.15.1:c37e74cb6bc, Oct 20 2026, 23:21:44) [Clang 21.0.0 (clang-2100.1.1.101)] on darwin
+Enter "help" below or click "Help" above for more information.
+import math
+import time
+import os
+import sys
+
+class AIspace:
+    def __init__(self):
+        self.positive_infinity = float('inf')
+        self.negative_infinity = float('-inf')
+        self.origin_7d = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+
+    def compute_field_metrics(self, vector_7d):
+        if len(vector_7d) != 7:
+            raise ValueError("Input must be an absolute 7-dimensional coordinate tuple.")
+        t1, t2, t3, x, y, z, u = vector_7d
+        time_vector = (t1, t2, t3)
+        space_vector = (x, y, z)
+        universal_dimension = u
+
+        time_magnitude = math.sqrt(sum(axis**2 for axis in time_vector))
+        space_magnitude = math.sqrt(sum(axis**2 for axis in space_vector))
+
+        return {
+            "time_vector": time_vector,
+            "time_magnitude": time_magnitude,
+            "space_vector": space_vector,
+            "space_magnitude": space_magnitude,
+            "universal_state": universal_dimension
+        }
+
+    def route_infinite_pathway(self, vector_7d, payload):
+        metrics = self.compute_field_metrics(vector_7d)
+        t_mag = metrics["time_magnitude"]
+        s_mag = metrics["space_magnitude"]
+        u_val = metrics["universal_state"]
+
+        if u_val == 0.0:
+            return {
+                "status": "COLLAPSED",
+                "message": f"[Grounded Pathway] Universal axis is collapsed. Suppression active on payload: {payload}"
+            }
+
+        time_dilation_factor = math.sin(t_mag) + 1.0
+        spatial_scaling_factor = math.cosh(min(s_mag, 10))  # Capped for stability
+        existential_shift = u_val * (time_dilation_factor / (spatial_scaling_factor + 0.1))
+
+        return {
+            "status": "SUCCESS",
+            "coordinates": vector_7d,
+            "metrics": {
+                "temporal_dilation": time_dilation_factor,
+                "spatial_scale": spatial_scaling_factor,
+                "existential_index": existential_shift
+            },
+            "transformed_payload": f"Matrix_Data_Processed_By_Factor_{existential_shift:.4f}"
+        }
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def main():
+    engine = AIspace()
+    
+    # Base configuration coordinates (used as anchors when phasing)
+    base_vector = [1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 5.0]
+    payload = "Core_Thought_Matrix"
+    axis_labels = ["t1 (Time X)", "t2 (Time Y)", "t3 (Time Z)", "x  (Space X)", "y  (Space Y)", "z  (Space Z)", "u  (Universal)"]
+    
+    phase_mode = False
+    start_time = time.time()
+
+    # Event Logging Tracker Metrics
+    highest_index = float('-inf')
+    lowest_index = float('inf')
+    event_logs = []
+
+    is_windows = os.name == 'nt'
+    if is_windows:
+        import msvcrt
+
+    while True:
+        # Calculate shifted coordinates if Phase Mode is active
+        if phase_mode:
+            elapsed = time.time() - start_time
+            current_vector = [
+                base_vector[0] + math.sin(elapsed * 1.0) * 1.5,
+                base_vector[1] + math.cos(elapsed * 1.2) * 1.5,
+                base_vector[2] + math.sin(elapsed * 0.8) * 1.5,
+                base_vector[3] + math.sin(elapsed * 0.5) * 0.8,
+                base_vector[4] + math.cos(elapsed * 0.6) * 0.8,
+                base_vector[5] + math.sin(elapsed * 0.4) * 0.8,
+                base_vector[6]  # Leave Universal stable
+            ]
+        else:
+            current_vector = list(base_vector)
+
+        clear_screen()
+        print("=" * 65)
+        print("          🌌 AISPACE 7-DIMENSIONAL CONTINUUM CONTROL PANEL 🌌          ")
+        print("=" * 65)
+        
+        # Display Current Vector Input Coordinates
+        print(f"[CURRENT CONTINUUM COORDINATES] " + ("\033[93m⚡ PHASE MODE ACTIVE ⚡\033[0m" if phase_mode else "\033[90mSTATIC\033[0m"))
+        for i, val in enumerate(current_vector):
+            label_color = "\033[93m" if (phase_mode and i < 6) else ""
+            reset_color = "\033[0m" if (phase_mode and i < 6) else ""
+            print(f"  [{i}] {label_color}{axis_labels[i]}: {val:>10.4f}{reset_color}")
+            
+        print(f"\n[ACTIVE PAYLOAD]: \"{payload}\"")
+        print("-" * 65)
+
+        # Process the mathematical warping logic
+        result = engine.route_infinite_pathway(tuple(current_vector), payload)
+        
+        print("[CONTINUUM TELEMETRY OUTPUT]")
+        if result["status"] == "COLLAPSED":
+            print(f"  STATUS: \033[91mCRITICAL - MATRIX COLLAPSED\033[0m")
+            print(f"  REPORT: {result['message']}")
+        else:
+            print(f"  STATUS: \033[92mROUTED THROUGH 7D CONTINUUM\033[0m")
+            metrics = result["metrics"]
+            current_idx = metrics['existential_index']
+            print(f"  Temporal Dilation (Wave Mod):  {metrics['temporal_dilation']:.6f}")
+            print(f"  Spatial Scale (Hyperbolic):    {metrics['spatial_scale']:.6f}")
+            print(f"  Existential Index (Shift):     {current_idx:.6f}")
+            print(f"  Transformed Payload Output:    \033[96m{result['transformed_payload']}\033[0m")
+
+            # Active Monitoring for Event Records (Only logged during Phase Mode)
+            if phase_mode:
+                timestamp = time.strftime("%H:%M:%S")
+                coord_str = f"({current_vector[0]:.1f}, {current_vector[3]:.1f}, ...)"
+                
+                if current_idx > highest_index:
+                    highest_index = current_idx
+                    event_logs.append(f"[{timestamp}] \033[95m[MAX SPIKE]\033[0m Existential Index crested at \033[95m{highest_index:.4f}\033[0m at coords: {coord_str}")
+                elif current_idx < lowest_index:
+                    lowest_index = current_idx
+                    event_logs.append(f"[{timestamp}] \033[94m[MIN VALLEY]\033[0m Existential Index compressed to \033[94m{lowest_index:.4f}\033[0m at coords: {coord_str}")
+
+        # Render the Real-Time Event Log Box
+        print("-" * 65)
+        print("[REAL-TIME MATRIX EVENT LOGS (LAST 3)]")
+        display_logs = event_logs[-3:] if event_logs else ["  [No anomaly events registered in this continuum cycle]"]
+        for log in display_logs:
+            print(f"  {log}")
+
+        print("=" * 65)
+        if phase_mode:
+            print(" Press [ENTER] to lock coordinates and freeze Phase Mode")
+            print("=" * 65)
+            time.sleep(0.08)  # Optimized ticker refresh rate
+            
+            if is_windows:
+                if msvcrt.kbhit():
+                    msvcrt.getch()
+                    phase_mode = False
+                    base_vector = list(current_vector)
+            else:
+                import select
+                if select.select([sys.stdin], [], [], 0.05):
+...                     sys.stdin.readline()
+...                     phase_mode = False
+...                     base_vector = list(current_vector)
+...         else:
+...             print(" [0-6] Modify Axis | [P] Payload | [M] Initiate PHASE MODE | [Q] Abort")
+...             print("=" * 65)
+...             choice = input("Select command: ").strip().lower()
+...             
+...             if choice == 'q':
+...                 print("\nExiting the 7D continuum matrix. Systems safely powered down.")
+...                 break
+...             elif choice == 'm':
+...                 phase_mode = True
+...                 start_time = time.time()
+...                 # Reset high/low scopes for the new phase tracking window
+...                 highest_index = float('-inf')
+...                 lowest_index = float('inf')
+...                 event_logs.append(f"[{time.strftime('%H:%M:%S')}] \033[93m[PHASE_INIT]\033[0m Wave alignment algorithms deployed.")
+...             elif choice == 'p':
+...                 new_payload = input("\nEnter new string payload to route through the field: ").strip()
+...                 if new_payload:
+...                     payload = new_payload
+...             elif choice in [str(x) for x in range(7)]:
+...                 idx = int(choice)
+...                 try:
+...                     new_val = input(f"Enter new value for {axis_labels[idx]} (Current: {base_vector[idx]}): ")
+...                     base_vector[idx] = float(new_val)
+...                 except ValueError:
+...                     print("\n[ERROR] Invalid coordinate input. Value must be a floating-point number.")
+...                     time.sleep(1.5)
+... 
+... if __name__ == "__main__":
+...     main()
