@@ -1,0 +1,194 @@
+import math
+import time
+import os
+import sys
+import random
+
+class WarpDrive7DEngine:
+    def __init__(self):
+        # Transducer efficiency coefficients for the 7 warp emitter arrays
+        self.emitter_efficiencies = [1.0 for _ in range(7)]
+        self.field_harmonic_index = 1.0
+        self.coil_thermal_strain = 0.0
+
+    def calculate_field_saturation(self, value, efficiency):
+        """Simulates localized spacetime metric saturation using a strict physics clamping limit."""
+        field_input = value * efficiency
+        # Clamps extreme inputs to simulate the physical limit of spacetime structural compression
+        return math.tanh(field_input)
+
+    def compute_propulsion_metrics(self, vector_7d):
+        if len(vector_7d) != 7:
+            raise ValueError("Input must be an absolute 7-dimensional warp vector tuple.")
+        
+        t1, t2, t3, x, y, z, u = vector_7d
+        
+        # --- 1. Spacetime Distortion Scaling (Temporal Filters) ---
+        # t1: Quantum Sub-Planckian Casimir field fluctuations
+        quantum_casimir_flux = self.calculate_field_saturation(t1 * 10, self.emitter_efficiencies[0])
+        # t2: Mesoscopic Field Mediation (The bridge coupling quantum voids to macro-space)
+        mesoscopic_coupling = 1.0 / (1.0 + math.exp(-t2 * self.emitter_efficiencies[1]))
+        # t3: Cosmological Metric Ripple (High-frequency gravitational wave generation)
+        gravitational_wave_ripple = math.cos(t3) * self.emitter_efficiencies[2] * (1.0 - self.coil_thermal_strain)
+
+        # --- 2. Plasma Shell Vectoring (Exotic Mass Particles) ---
+        # Treating spatial coordinates as rotating mass ring arrays around the vessel
+        m1_quantum_plasma = abs(self.calculate_field_saturation(x, self.emitter_efficiencies[3])) * 15.0
+        m2_baryon_plasma  = abs(self.calculate_field_saturation(y, self.emitter_efficiencies[4])) * 22.0
+        m3_dark_matter_plasma = abs(self.calculate_field_saturation(z, self.emitter_efficiencies[5])) * 38.0
+        
+        total_plasma_mass_load = m1_quantum_plasma + m2_baryon_plasma + m3_dark_matter_plasma
+        gravitational_shear_stress = total_plasma_mass_load * (1.0 + abs(gravitational_wave_ripple))
+
+        # --- 3. Warp Coil Thermal & Distortion Feedback Loops ---
+        # If stress climbs past threshold limits, coils absorb heat and warp field efficiency decays
+        if gravitational_shear_stress > 50.0:
+            self.coil_thermal_strain = min(self.coil_thermal_strain + 0.05, 0.9)  # Accumulate thermal load
+            self.field_harmonic_index *= 0.95  # Metric distortion de-sync
+            self.emitter_efficiencies = [eff * 0.98 for eff in self.emitter_efficiencies]  # Core degradation
+            propulsion_state = "THERMAL_COIL_STRAIN"
+        else:
+            self.coil_thermal_strain = max(self.coil_thermal_strain - 0.02, 0.0)  # Active coolant dispersion
+            if abs(gravitational_wave_ripple) > 0.5:
+                self.field_harmonic_index = min(self.field_harmonic_index + 0.02, 3.0)  # Metric lock achieved
+                self.emitter_efficiencies = [min(eff * 1.01, 2.5) for eff in self.emitter_efficiencies]
+                propulsion_state = "METRIC_REINFORCEMENT (FWM)"
+            else:
+                propulsion_state = "PROPULSION_HOMEOSTASIS"
+
+        # Check for catastrophic warp field structural breakdown
+        is_collapsed = False
+        collapse_reason = ""
+        if u == 0.0:
+            is_collapsed = True
+            collapse_reason = "Core containment breach. Main antimatter catalyst voltage flatlined."
+        elif self.coil_thermal_strain >= 0.85:
+            is_collapsed = True
+            collapse_reason = "Thermal warp coil meltdown. Magnetic containment field emergency venting forced sub-light drop."
+        elif gravitational_shear_stress > 80.0:
+            is_collapsed = True
+            collapse_reason = f"Gravitational tidal shear ({gravitational_shear_stress:.2f} G-Units) ruptured the warp envelope boundary (80.0 Limit)."
+
+        return {
+            "is_collapsed": is_collapsed,
+            "collapse_reason": collapse_reason,
+            "total_mass_load": total_plasma_mass_load,
+            "shear_stress": gravitational_shear_stress,
+            "propulsion_state": propulsion_state,
+            "net_engine_efficiency": (1.0 - self.coil_thermal_strain) * self.field_harmonic_index,
+            "components": {
+                "quantum_casimir": quantum_casimir_flux,
+                "mesoscopic_coupling": mesoscopic_coupling,
+                "grav_wave_ripple": gravitational_wave_ripple
+            }
+        }
+
+    def process_propulsion_envelope(self, vector_7d, payload):
+        metrics = self.compute_propulsion_metrics(vector_7d)
+        u_val = vector_7d[6]
+        
+        if metrics["is_collapsed"]:
+            # Emergency automated subsystem flush on field failure
+            self.emitter_efficiencies = [1.0 for _ in range(7)]
+            self.coil_thermal_strain = 0.0
+            self.field_harmonic_index = 1.0
+            return {"status": "COLLAPSED", "message": metrics["collapse_reason"]}
+            
+        warp_velocity_factor = metrics["net_engine_efficiency"] * (u_val * (1.0 / (metrics["shear_stress"] + 0.1)))
+        
+        return {
+            "status": "SUCCESS",
+            "metrics": metrics,
+            "warp_velocity_factor": warp_velocity_factor,
+            "transformed_payload": f"Warp_Bubble_Telemetry_Locked_At_v_factor_{warp_velocity_factor:.4f}"
+        }
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def main():
+    engine = WarpDrive7DEngine()
+    base_vector = [0.05, 0.5, 1.0, 1.0, 1.0, 1.0, 5.0]
+    payload = "Vessel_Structural_Manifest"
+    
+    axis_labels = [
+        "t1 (Quantum Casimir Flux)", 
+        "t2 (Mesoscopic Coupling) ", 
+        "t3 (Gravitational Ripple)", 
+        "x  (M1: Quantum Plasma)  ", 
+        "y  (M2: Baryon Plasma)   ", 
+        "z  (M3: Dark Matter Rings)", 
+        "u  (Catalyst Voltage Core)"
+    ]
+    
+    phase_mode = False
+    start_time = time.time()
+    event_logs = []
+    
+    is_windows = os.name == 'nt'
+    if is_windows: import msvcrt
+    else: import select
+
+    while True:
+        if phase_mode:
+            elapsed = time.time() - start_time
+            # Phase mode pipes active velocity vector adjustments down the power feeds
+            current_vector = [
+                base_vector[0] + (math.sin(elapsed * 2.0) * 0.2),
+                base_vector[1] + (math.cos(elapsed * 1.5) * 0.5),
+                base_vector[2] + (elapsed * 0.5), 
+                base_vector[3] + (math.sin(elapsed * 0.8) * 1.2),
+                base_vector[4] + (math.cos(elapsed * 0.6) * 1.2),
+                base_vector[5] + (math.sin(elapsed * 0.4) * 1.8),
+                base_vector[6]
+            ]
+        else:
+            current_vector = list(base_vector)
+            
+        clear_screen()
+        print("=" * 82)
+        print(" AISPACE 7D LIGHT-SPEED METRIC WARP PROPULSION ENGINE CONTROL ")
+        print("=" * 82)
+        
+        status_str = "\033[96m⚡ ACTIVE FTL METRIC WARPING DEPLOYED ⚡\033[0m" if phase_mode else "\033[90mSTATIC STANDBY\033[0m"
+        print(f"[WARP EMITTER CONFIGURATION] {status_str}")
+        
+        for i, val in enumerate(current_vector):
+            label_color = "\033[96m" if (phase_mode and i < 6) else ""
+            reset_color = "\033[0m" if (phase_mode and i < 6) else ""
+            print(f" [{i}] {label_color}{axis_labels[i]}: {val:>12.4f}{reset_color}")
+            
+        print(f"\n[WARP ENVELOPE ISOLATION TARGET]: \"{payload}\"")
+        print("-" * 82)
+        
+        result = engine.process_propulsion_envelope(tuple(current_vector), payload)
+        print("[PROPULSION EMITTER REAL-TIME METRICS]")
+        
+        if result["status"] == "COLLAPSED":
+            print(f" TELEMETRY STATUS: \033[91m⚠️ CRITICAL FIELD EMERGENCY SUB-LIGHT DROP\033[0m")
+            print(f" INCIDENT DIAGNOSTIC: \033[91m{result['message']}\033[0m")
+            if phase_mode:
+                event_logs.append(f"[{time.strftime('%H:%M:%S')}] \033[91m[FIELD_DROP]\033[0m Hull emergency breakers tripped. Drop to sub-light forced.")
+                phase_mode = False
+                base_vector = [0.05, 0.5, 1.0, 0.5, 0.5, 0.5, 5.0]
+                print("\033[93mInitiating automated coolant cycle... Purging plasma exhaust lines...\033[0m")
+                time.sleep(2.5)
+        else:
+            m = result["metrics"]
+            comp = m["components"]
+            print(f" Casimir Flux (t1)    : {comp['quantum_casimir']:.4f}  | Mesoscopic Link (t2) : {comp['mesoscopic_coupling']:.4f}")
+            print(f" Gravitational Wave(t3): {comp['grav_wave_ripple']:.4f}")
+            print(f" Coil Thermal Strain  : {m['coil_thermal_strain']*100:.1f}%     | Envelope Harmonic Link: {m['net_engine_efficiency']:.3f}x")
+            print(f" Spatial Shear Load    : {m['shear_stress']:.2f} Gs    | 📈 Status: \033[92m{m['propulsion_state']}\033[0m")
+            print(f" Calculated Warp Velocity : \033[92mv = {result['warp_velocity_factor']:.4f} c\033[0m (Light-Speed Multiplier)")
+            
+            if phase_mode:
+                timestamp = time.strftime("%H:%M:%S")
+                if m['propulsion_state'] == "METRIC_REINFORCEMENT (FWM)" and random.random() < 0.1:
+                    event_logs.append(f"[{timestamp}] \033[92m[METRIC_LOCK]\033[0m Warp wave front stabilized. Emitter arrays optimized.")
+                elif m['coil_thermal_strain'] > 0.5:
+                    event_logs.append(f"[{timestamp}] \033[93m[THERMAL_ALERT]\033[0m Inductive heating in spatial compression coils crossing safe baseline tolerances.")
+                    
+        print("-" * 82)
+        print("[PROPULSION FAULT & ANOMALY LOG ARCHIVE (LAST 3)]")
+        for log in (event_logs[-3:] if event_logs else [" [Warp drive envelope geometries processing within stable parameters]"]):
