@@ -1,0 +1,231 @@
+import math
+import time
+import os
+import sys
+
+class AIspace:
+    def __init__(self):
+        self.positive_infinity = float('inf')
+        self.negative_infinity = float('-inf')
+        self.origin_7d = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+
+    def compute_field_metrics(self, vector_7d):
+        if len(vector_7d) != 7:
+            raise ValueError("Input must be an absolute 7-dimensional coordinate tuple.")
+        
+        t1, t2, t3, x, y, z, u = vector_7d
+        time_vector = (t1, t2, t3)
+        space_vector = (x, y, z)
+        universal_dimension = u
+        
+        # --- Multi-Scale Temporal Physics ---
+        quantum_wave = math.sin(t1 * 1e3) * 0.5 + 0.5
+        interaction_mediation = 1.0 / (1.0 + math.exp(-max(min(t2, 20), -20)))
+        cosmological_ripple = math.cos(t3) * math.exp(-abs(t3) * 0.05)
+        
+        time_magnitude = math.sqrt(quantum_wave**2 + interaction_mediation**2 + cosmological_ripple**2)
+        
+        # --- Mass Particle Physics Integration ---
+        # Treat spatial coordinates as mass vectors of distinct particles
+        # Mass energy calculation based on coordinate magnitudes
+        m1_mass = abs(x) * 1.5
+        m2_mass = abs(y) * 2.2
+        m3_mass = abs(z) * 3.8
+        total_particle_mass = m1_mass + m2_mass + m3_mass
+        
+        # Gravitational wave interference factor: Mass dampens or amplifies the ripple
+        gravitational_stress = total_particle_mass * (1.0 + abs(cosmological_ripple))
+        
+        # Determine critical safety threshold for gravitational collapse
+        is_collapsed = False
+        collapse_reason = ""
+        if universal_dimension == 0.0:
+            is_collapsed = True
+            collapse_reason = "Universal master axis structural shutdown."
+        elif gravitational_stress > 75.0:  # Critical mass limit crossed
+            is_collapsed = True
+            collapse_reason = f"Gravitational stress ({gravitational_stress:.2f} Payload Units) crossed Singularity Threshold (75.0). Black hole event horizon formed."
+
+        return {
+            "time_vector": time_vector,
+            "time_magnitude": time_magnitude,
+            "space_vector": space_vector,
+            "universal_state": universal_dimension,
+            "total_mass": total_particle_mass,
+            "gravitational_stress": gravitational_stress,
+            "is_collapsed": is_collapsed,
+            "collapse_reason": collapse_reason,
+            "physics_breakdown": {
+                "quantum_fluctuation": quantum_wave,
+                "quantum_mediation": interaction_mediation,
+                "gravitational_wave": cosmological_ripple,
+                "m1_quantum_dot": m1_mass,
+                "m2_baryon_cluster": m2_mass,
+                "m3_dark_matter_node": m3_mass
+            }
+        }
+
+    def route_infinite_pathway(self, vector_7d, payload):
+        metrics = self.compute_field_metrics(vector_7d)
+        
+        if metrics["is_collapsed"]:
+            return {
+                "status": "COLLAPSED",
+                "message": metrics["collapse_reason"],
+                "payload": payload
+            }
+            
+        t_mag = metrics["time_magnitude"]
+        u_val = metrics["universal_state"]
+        stress = metrics["gravitational_stress"]
+        
+        # Spacetime dilation warped by localized mass stress
+        time_dilation_factor = math.sin(t_mag) + 1.0
+        spatial_scaling_factor = math.cosh(min(stress / 10.0, 7)) 
+        existential_shift = u_val * (time_dilation_factor / (spatial_scaling_factor + 0.1))
+        
+        return {
+            "status": "SUCCESS",
+            "coordinates": vector_7d,
+            "metrics": {
+                "temporal_dilation": time_dilation_factor,
+                "spatial_scale": spatial_scaling_factor,
+                "existential_index": existential_shift,
+                "total_mass": metrics["total_mass"],
+                "gravitational_stress": stress
+            },
+            "physics_breakdown": metrics["physics_breakdown"],
+            "transformed_payload": f"Matrix_Data_Processed_By_Factor_{existential_shift:.4f}"
+        }
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def main():
+    engine = AIspace()
+    
+    # Base configuration: [t1, t2, t3, m1, m2, m3, u]
+    base_vector = [0.005, 1.5, 12.0, 2.0, 2.0, 2.0, 5.0]
+    payload = "Core_Thought_Matrix"
+    axis_labels = [
+        "t1 (Quantum Scale)     ", 
+        "t2 (Interaction Scale) ", 
+        "t3 (Cosmological Scale)", 
+        "x  (M1: Quantum Dot)   ", 
+        "y  (M2: Baryon Cluster)", 
+        "z  (M3: Dark Matter)   ", 
+        "u  (Universal Multi)   "
+    ]
+    
+    phase_mode = False
+    start_time = time.time()
+    
+    highest_index = float('-inf')
+    lowest_index = float('inf')
+    event_logs = []
+    
+    is_windows = os.name == 'nt'
+    if is_windows:
+        import msvcrt
+    else:
+        import select
+
+    while True:
+        if phase_mode:
+            elapsed = time.time() - start_time
+            current_vector = [
+                base_vector[0] + (elapsed * 0.002) % 0.01,
+                base_vector[1] + math.sin(elapsed * 1.2) * 2.0,
+                base_vector[2] + math.cos(elapsed * 0.4) * 5.0,
+                base_vector[3] + math.sin(elapsed * 0.5) * 1.5,   # Mass 1 orbital swing
+                base_vector[4] + math.cos(elapsed * 0.6) * 1.5,   # Mass 2 orbital swing
+                base_vector[5] + math.sin(elapsed * 0.4) * 2.5,   # Mass 3 orbital swing
+                base_vector[6]
+            ]
+        else:
+            current_vector = list(base_vector)
+            
+        clear_screen()
+        print("=" * 75)
+        print(" AISPACE MULTI-SCALE QUANTUM & MASS PARTICLE ENGINE ")
+        print("=" * 75)
+        
+        phase_status_str = "\033[93m⚡ PHASE MODE ACTIVE ⚡\033[0m" if phase_mode else "\033[90mSTATIC\033[0m"
+        print(f"[FIELD SYSTEM RECOGNITION] {phase_status_str}")
+        
+        for i, val in enumerate(current_vector):
+            label_color = "\033[93m" if (phase_mode and i < 6) else ""
+            reset_color = "\033[0m" if (phase_mode and i < 6) else ""
+            print(f" [{i}] {label_color}{axis_labels[i]}: {val:>12.4f}{reset_color}")
+            
+        print(f"\n[ACTIVE PAYLOAD]: \"{payload}\"")
+        print("-" * 75)
+        
+        result = engine.route_infinite_pathway(tuple(current_vector), payload)
+        print("[CONTINUUM TELEMETRY METRICS]")
+        
+        if result["status"] == "COLLAPSED":
+            print(f" STATUS: \033[91mCRITICAL - FIELD COLLAPSED\033[0m")
+            print(f" FAILURE INERTIA: \033[91m{result['message']}\033[0m")
+            if phase_mode:
+                event_logs.append(f"[{time.strftime('%H:%M:%S')}] \033[91m[SINGULARITY_EVENT]\033[0m Field crushed under structural gravity.")
+                phase_mode = False
+                base_vector = [0.005, 1.5, 12.0, 1.0, 1.0, 1.0, 5.0] # Auto-reset to stable baseline
+                print("\033[93mFailsafe auto-activated: Inertial metrics reset to stable baseline values.\033[0m")
+                time.sleep(2.0)
+        else:
+            print(f" STATUS: \033[92mROUTED THROUGH MASS-WARPED SPACETIME\033[0m")
+            metrics = result["metrics"]
+            pb = result["physics_breakdown"]
+            current_idx = metrics['existential_index']
+            
+            print(f" ⚛️  Quantum Fluctuation (t1): {pb['quantum_fluctuation']:.4f} | 🎛️  Mediation (t2): {pb['quantum_mediation']:.4f}")
+            print(f" 🌊  Cosmological Wave  (t3): {pb['gravitational_wave']:.4f}")
+            print(f" 📦  Total Particle Mass     : {metrics['total_mass']:.2f} kg equ.")
+            print(f" 💥  Gravitational Stress    : {metrics['gravitational_stress']:.2f} / 75.0 Max")
+            print(f" 📊  Existential Index (Net) : {current_idx:.6f}")
+            print(f" Transformed Payload: \033[96m{result['transformed_payload']}\033[0m")
+            
+            if phase_mode:
+                timestamp = time.strftime("%H:%M:%S")
+                if current_idx > highest_index:
+                    highest_index = current_idx
+                    event_logs.append(f"[{timestamp}] \033[95m[HIGH ENERGY]\033[0m Particles reached rapid alignment. Index: \033[95m{highest_index:.4f}\033[0m")
+                elif metrics['gravitational_stress'] > 55.0:
+                    event_logs.append(f"[{timestamp}] \033[93m[GRAVITY WARNING]\033[0m High mass density warping event space close to collapse limit.")
+                    
+        print("-" * 75)
+        print("[REAL-TIME MATRIX EVENT LOGS (LAST 3)]")
+        display_logs = event_logs[-3:] if event_logs else [" [No system or gravitational stress anomalies recorded]"]
+        for log in display_logs:
+            print(f" {log}")
+        print("=" * 75)
+        
+        if phase_mode:
+            print(" Press [ENTER] to lock particle positions and freeze Phase Mode")
+            print("=" * 75)
+            time.sleep(0.08)
+            
+            if is_windows:
+                if msvcrt.kbhit():
+                    if msvcrt.getch() in (b'\r', b'\n'):
+                        phase_mode = False
+                        base_vector = list(current_vector)
+            else:
+                rlist, _, _ = select.select([sys.stdin], [], [], 0.05)
+                if rlist:
+                    sys.stdin.readline()
+                    phase_mode = False
+                    base_vector = list(current_vector)
+        else:
+            print(" [0-6] Modify Axis | [P] Payload | [M] Initiate PHASE MODE | [Q] Abort")
+            print("=" * 75)
+            choice = input("Select command: ").strip().lower()
+            
+            if choice == 'q':
+                print("\nExiting the 7D multi-scale matrix. Core systems powered down cleanly.")
+                break
+            elif choice == 'm':
+                phase_mode = True
+                start_time = time.time()
+                highest_index = float('-inf')
