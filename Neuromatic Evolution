@@ -1,0 +1,208 @@
+import math
+import time
+import os
+import sys
+import random
+
+class Neuromatic7DEngine:
+    def __init__(self):
+        # Neural weights representing synaptic pathways between dimensions
+        # Initialized to random biological baselines
+        self.synaptic_weights = [random.uniform(0.8, 1.2) for _ in range(7)]
+        # Track historical structural strain for neuroplastic adaptation
+        self.plasticity_index = 1.0
+        self.cellular_fatigue = 0.0
+
+    def neuromorphic_activation(self, value, weight):
+        """Simulates a biological axon potential using a weighted tanh activation function."""
+        stimulated_input = value * weight
+        # Tanh clamps raw coordinate values between -1.0 and 1.0, mimicking a neural saturation curve
+        return math.tanh(stimulated_input)
+
+    def compute_neuromatic_field(self, vector_7d):
+        if len(vector_7d) != 7:
+            raise ValueError("Input must be an absolute 7-dimensional coordinate tuple.")
+        
+        t1, t2, t3, x, y, z, u = vector_7d
+        
+        # --- 1. Neuromatic Time Scaling (Axonal Propagation) ---
+        # t1 Quantum: Fast micro-firing rates
+        quantum_firing = self.neuromorphic_activation(t1 * 10, self.synaptic_weights[0])
+        # t2 Interaction: Synaptic cleft mediation (Neurotransmitter depletion model)
+        synaptic_mediation = 1.0 / (1.0 + math.exp(-t2 * self.synaptic_weights[1]))
+        # t3 Cosmological: Deep neural oscillation wave (Theta/Delta wave simulation)
+        deep_brain_oscillation = math.cos(t3) * self.synaptic_weights[2] * (1.0 - self.cellular_fatigue)
+
+        # --- 2. Neuromatic Mass Scaling (Dendritic Clusters) ---
+        # Treating spatial points as neural density clusters
+        m1_dendrite = abs(self.neuromorphic_activation(x, self.synaptic_weights[3])) * 15.0
+        m2_axon_hillock = abs(self.neuromorphic_activation(y, self.synaptic_weights[4])) * 22.0
+        m3_myelin_sheath = abs(self.neuromorphic_activation(z, self.synaptic_weights[5])) * 38.0
+        
+        total_neural_mass = m1_dendrite + m2_axon_hillock + m3_myelin_sheath
+        neurological_stress = total_neural_mass * (1.0 + abs(deep_brain_oscillation))
+
+        # --- 3. Neuroplastic Adaptation Loops ---
+        # If stress is nominal, synaptic pathway weights grow stronger (LTP - Long-Term Potentiation)
+        # If stress is excessively high, pathways undergo synaptic fatigue/depression
+        if neurological_stress > 50.0:
+            self.cellular_fatigue = min(self.cellular_fatigue + 0.05, 0.9)  # Fatigue builds up
+            self.plasticity_index *= 0.95  # Synaptic depression
+            # High stress causes axon pruning (weights decay)
+            self.synaptic_weights = [w * 0.98 for w in self.synaptic_weights]
+            adaptation_state = "SYNAPTIC_FATIGUE"
+        else:
+            self.cellular_fatigue = max(self.cellular_fatigue - 0.02, 0.0)  # Recharging neurotransmitters
+            if abs(deep_brain_oscillation) > 0.5:
+                self.plasticity_index = min(self.plasticity_index + 0.02, 3.0)  # Hebbian learning boost
+                self.synaptic_weights = [min(w * 1.01, 2.5) for w in self.synaptic_weights]
+                adaptation_state = "LONG_TERM_POTENTIATION (LTP)"
+            else:
+                adaptation_state = "NEURAL_HOMEOSTASIS"
+
+        # Check for neurological seizure/collapse threshold
+        is_collapsed = False
+        collapse_reason = ""
+        if u == 0.0:
+            is_collapsed = True
+            collapse_reason = "Universal Master Core Neuronal flatline."
+        elif self.cellular_fatigue >= 0.85:
+            is_collapsed = True
+            collapse_reason = "Neurotransmitter Exhaustion. The network collapsed into an unresponsive refractory state."
+        elif neurological_stress > 80.0:
+            is_collapsed = True
+            collapse_reason = f"Neurological Stress ({neurological_stress:.2f} Hz) exceeded Seizure Threshold (80.0 Hz)."
+
+        return {
+            "is_collapsed": is_collapsed,
+            "collapse_reason": collapse_reason,
+            "total_mass": total_neural_mass,
+            "stress": neurological_stress,
+            "adaptation_state": adaptation_state,
+            "net_efficiency": (1.0 - self.cellular_fatigue) * self.plasticity_index,
+            "components": {
+                "quantum_firing": quantum_firing,
+                "synaptic_mediation": synaptic_mediation,
+                "deep_oscillation": deep_brain_oscillation
+            }
+        }
+
+    def process_neuromatic_payload(self, vector_7d, payload):
+        metrics = self.compute_neuromatic_field(vector_7d)
+        
+        if metrics["is_collapsed"]:
+            # Auto-rehabilitate the model neural synapses back to health on failure
+            self.synaptic_weights = [random.uniform(0.9, 1.1) for _ in range(7)]
+            self.cellular_fatigue = 0.0
+            self.plasticity_index = 1.0
+            return {"status": "COLLAPSED", "message": metrics["collapse_reason"]}
+            
+        net_shift = metrics["net_efficiency"] * u_factor_calculation(vector_7d[6], metrics["stress"])
+        
+        return {
+            "status": "SUCCESS",
+            "metrics": metrics,
+            "net_shift": net_shift,
+            "transformed_payload": f"Neural_Matrix_Decoded_Via_Factor_{net_shift:.4f}"
+        }
+
+def u_factor_calculation(u, stress):
+    return u * (1.0 / (stress + 0.1))
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def main():
+    engine = Neuromatic7DEngine()
+    base_vector = [0.05, 0.5, 1.0, 1.0, 1.0, 1.0, 5.0]
+    payload = "Core_Thought_Matrix"
+    
+    axis_labels = [
+        "t1 (Quantum Firing)    ", 
+        "t2 (Synaptic Cleft)    ", 
+        "t3 (Deep Brain Rhythm) ", 
+        "x  (M1: Dendrite Cluster)", 
+        "y  (M2: Axon Hillock)  ", 
+        "z  (M3: Myelin Sheath) ", 
+        "u  (Universal Voltage) "
+    ]
+    
+    phase_mode = False
+    start_time = time.time()
+    event_logs = []
+    
+    is_windows = os.name == 'nt'
+    if is_windows: import msvcrt
+    else: import select
+
+    while True:
+        if phase_mode:
+            elapsed = time.time() - start_time
+            # Phase mode streams data like sensory inputs firing continuously down a nerve
+            current_vector = [
+                base_vector[0] + (math.sin(elapsed * 2.0) * 0.2),
+                base_vector[1] + (math.cos(elapsed * 1.5) * 0.5),
+                base_vector[2] + (elapsed * 0.5), 
+                base_vector[3] + (math.sin(elapsed * 0.8) * 1.2),
+                base_vector[4] + (math.cos(elapsed * 0.6) * 1.2),
+                base_vector[5] + (math.sin(elapsed * 0.4) * 1.8),
+                base_vector[6]
+            ]
+        else:
+            current_vector = list(base_vector)
+            
+        clear_screen()
+        print("=" * 78)
+        print(" AISPACE NEUROMATIC 7D BIOLOGICAL CONTINUUM MONITOR ")
+        print("=" * 78)
+        
+        status_str = "\033[95m⚡ REGENERATIVE NEURAL DRIFT ACTIVE ⚡\033[0m" if phase_mode else "\033[90mSTATIC\033[0m"
+        print(f"[SYNAPTIC MAP STATE] {status_str}")
+        
+        for i, val in enumerate(current_vector):
+            label_color = "\033[95m" if (phase_mode and i < 6) else ""
+            reset_color = "\033[0m" if (phase_mode and i < 6) else ""
+            print(f" [{i}] {label_color}{axis_labels[i]}: {val:>12.4f}{reset_color}")
+            
+        print(f"\n[NEURAL STRAND COGNITION TARGET]: \"{payload}\"")
+        print("-" * 78)
+        
+        result = engine.process_neuromatic_payload(tuple(current_vector), payload)
+        print("[NEUROMORPHIC SYSTEM TELEMETRY]")
+        
+        if result["status"] == "COLLAPSED":
+            print(f" STATUS: \033[91m⚠️ NERVE NETWORK FLATLINE\033[0m")
+            print(f" PATHOLOGY: \033[91m{result['message']}\033[0m")
+            if phase_mode:
+                event_logs.append(f"[{time.strftime('%H:%M:%S')}] \033[91m[CRITICAL_SEIZURE]\033[0m Synaptic shock reset system vectors.")
+                phase_mode = False
+                base_vector = [0.05, 0.5, 1.0, 0.5, 0.5, 0.5, 5.0]
+                print("\033[93mSynaptic reboot initiated. Restoring neurotransmitter homeostatic baseline...\033[0m")
+                time.sleep(2.5)
+        else:
+            m = result["metrics"]
+            comp = m["components"]
+            print(f" ⚛️ Axon Micro-Firing (t1) : {comp['quantum_firing']:.4f}  | 🎛️ Synaptic Bridge (t2): {comp['synaptic_mediation']:.4f}")
+            print(f" 🌊 Cortical Rhythm  (t3) : {comp['deep_oscillation']:.4f}")
+            print(f" 💤 Neuro-Cellular Fatigue : {m['cellular_fatigue']*100:.1f}%     | 🔗 Neuroplasticity Index: {m['plasticity_index']:.3f}x")
+            print(f" 💥 Net Network Workload   : {m['stress']:.2f} Hz    | 📈 State: \033[92m{m['adaptation_state']}\033[0m")
+            print(f" Decoded Cognitive Output  : \033[96m{result['transformed_payload']}\033[0m")
+            
+            if phase_mode:
+                timestamp = time.strftime("%H:%M:%S")
+                if m['adaptation_state'] == "LONG_TERM_POTENTIATION (LTP)" and random.random() < 0.1:
+                    event_logs.append(f"[{timestamp}] \033[92m[LTP_ENGAGED]\033[0m Synaptic pathways strengthened via continuous flow.")
+                elif m['cellular_fatigue'] > 0.5:
+                    event_logs.append(f"[{timestamp}] \033[93m[FATIGUE_ALERT]\033[0m Metabolic exhaustion high. Axon transmission efficiency degrading.")
+                    
+        print("-" * 78)
+        print("[PLASTICITY ARCHIVE EVENT LOGS (LAST 3)]")
+        for log in (event_logs[-3:] if event_logs else [" [Neural network pathways operating within adaptive boundaries]"]):
+            print(f" {log}")
+        print("=" * 78)
+        
+        if phase_mode:
+            print(" Press [ENTER] to lock synaptic weights and clamp the network down")
+            print("=" * 78)
+            time.sleep(0.08)
+            if is_windows:
